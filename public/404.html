@@ -5,11 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Redirecting | Giovany Kantoro</title>
     <script>
-      sessionStorage.setItem('portfolioRedirect', window.location.pathname);
-      window.location.replace('/');
+      var basePath = '/portfolio';
+      var path = window.location.pathname.startsWith(basePath + '/')
+        ? window.location.pathname.slice(basePath.length)
+        : window.location.pathname;
+      sessionStorage.setItem('portfolioRedirect', path + window.location.search + window.location.hash);
+      window.location.replace(basePath + '/');
     </script>
   </head>
   <body>
-    <a href="/">Return home</a>
+    <a href="/portfolio/">Return home</a>
   </body>
 </html>

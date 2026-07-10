@@ -9,6 +9,20 @@ const portfolioAssets = import.meta.glob('./assets/portfolio/*.{webp,png,jpg,jpe
   import: 'default',
 });
 const asset = (name, extension = 'webp') => portfolioAssets[`./assets/portfolio/${name}.${extension}`];
+const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+function stripBasePath(pathname) {
+  if (!basePath) return pathname;
+  if (pathname === basePath) return '/';
+  if (pathname.startsWith(`${basePath}/`)) return pathname.slice(basePath.length) || '/';
+  return pathname;
+}
+
+function withBasePath(path) {
+  if (!basePath || !path.startsWith('/')) return path;
+  if (path === '/') return `${basePath}/`;
+  return `${basePath}${path}`;
+}
 
 const projects = [
   {
@@ -251,7 +265,7 @@ const expertiseTags = [
 ];
 
 function getRoute() {
-  const path = window.location.pathname.replace(/\/$/, '') || '/';
+  const path = stripBasePath(window.location.pathname).replace(/\/$/, '') || '/';
   const hash = window.location.hash;
   const projectMatch = path.match(/^\/project\/([^/]+)$/);
   return projectMatch
@@ -260,23 +274,26 @@ function getRoute() {
 }
 
 function navigate(path) {
-  window.history.pushState({}, '', path);
+  window.history.pushState({}, '', withBasePath(path));
   window.dispatchEvent(new PopStateEvent('popstate'));
 }
 
 function AppLink({ href, children, ...props }) {
+  const isRootRelative = href.startsWith('/');
+  const renderedHref = isRootRelative ? `${withBasePath(new URL(href, window.location.origin).pathname)}${new URL(href, window.location.origin).hash}` : href;
+
   function handleClick(event) {
     const isPlainLeftClick = event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey;
-    const url = new URL(href, window.location.origin);
+    const url = new URL(renderedHref, window.location.origin);
 
     if (isPlainLeftClick && url.origin === window.location.origin) {
       event.preventDefault();
-      navigate(`${url.pathname}${url.hash}`);
+      navigate(`${stripBasePath(url.pathname)}${url.hash}`);
     }
   }
 
   return (
-    <a href={href} onClick={handleClick} {...props}>
+    <a href={renderedHref} onClick={handleClick} {...props}>
       {children}
     </a>
   );
@@ -289,7 +306,7 @@ function useRoute() {
     const redirectedPath = sessionStorage.getItem('portfolioRedirect');
     if (redirectedPath) {
       sessionStorage.removeItem('portfolioRedirect');
-      window.history.replaceState({}, '', redirectedPath);
+      window.history.replaceState({}, '', withBasePath(redirectedPath));
       setRoute(getRoute());
     }
 
