@@ -608,7 +608,7 @@ function HomePage({ routeHash }) {
           <h2 id="contact-title" className="reveal">
             Turning Ideas Into Visual Experiences That Stay
           </h2>
-          <a className="outline-button reveal" href="mailto:hello@example.com">
+          <a className="outline-button reveal" href="mailto:giovanykan@gmail.com">
             Work With Me
           </a>
         </section>
