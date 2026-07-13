@@ -606,10 +606,10 @@ function HomePage({ routeHash }) {
 
         <section className="contact-section" id="contact" aria-labelledby="contact-title">
           <h2 id="contact-title" className="reveal">
-            Let's Create Something Memorable Together
+            Turning Ideas Into Visual Experiences That Stay
           </h2>
           <a className="outline-button reveal" href="mailto:hello@example.com">
-            Start a conversation
+            Work With Me
           </a>
         </section>
       </main>
