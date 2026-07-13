@@ -145,19 +145,17 @@ img {
 
 .parallax-layer,
 .parallax-image {
-  --parallax-x: 0px;
   --parallax-y: 0px;
-  --parallax-rotate: 0deg;
   --hover-y: 0px;
   will-change: transform;
 }
 
 .parallax-layer {
-  transform: translate3d(var(--parallax-x), var(--parallax-y), 0) rotate(var(--parallax-rotate));
+  transform: translate3d(0, var(--parallax-y), 0);
 }
 
 .parallax-image {
-  transform: translate3d(var(--parallax-x), calc(var(--parallax-y) + var(--hover-y)), 0) rotate(var(--parallax-rotate)) scale(1.06);
+  transform: translate3d(0, calc(var(--parallax-y) + var(--hover-y)), 0) scale(1.06);
 }
 
 .nav-links a:hover,
@@ -511,6 +509,7 @@ h1 {
   aspect-ratio: 1 / 1;
   overflow: hidden;
   background: transparent;
+  transform-origin: center;
 }
 
 .portfolio-tile img {
@@ -531,6 +530,11 @@ h1 {
 .portfolio-tile a:focus-visible img {
   --hover-y: -4px;
   filter: saturate(1.04);
+}
+
+.portfolio-tile a:hover .portfolio-thumb,
+.portfolio-tile a:focus-visible .portfolio-thumb {
+  animation: project-thumb-pulse 760ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .portfolio-tile.is-logo-tile a:hover img,
@@ -1120,7 +1124,7 @@ h1 {
 
 .reveal {
   opacity: 0;
-  transform: translate3d(var(--parallax-x, 0px), calc(18px + var(--parallax-y, 0px)), 0) rotate(var(--parallax-rotate, 0deg));
+  transform: translate3d(0, calc(18px + var(--parallax-y, 0px)), 0);
   transition-property: opacity, transform;
   transition-duration: 720ms;
   transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
@@ -1128,7 +1132,7 @@ h1 {
 
 .reveal.is-visible {
   opacity: 1;
-  transform: translate3d(var(--parallax-x, 0px), var(--parallax-y, 0px), 0) rotate(var(--parallax-rotate, 0deg));
+  transform: translate3d(0, var(--parallax-y, 0px), 0);
 }
 
 @keyframes orbit-breathe {
@@ -1155,6 +1159,20 @@ h1 {
   100% {
     opacity: 0.18;
     transform: translateY(12px) scaleY(0.18);
+  }
+}
+
+@keyframes project-thumb-pulse {
+  0% {
+    scale: 1;
+  }
+
+  38% {
+    scale: 1.025;
+  }
+
+  100% {
+    scale: 1;
   }
 }
 

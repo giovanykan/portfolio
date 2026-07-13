@@ -343,7 +343,6 @@ function useParallax() {
     let elements = [];
     const settleTimers = [];
     const states = new WeakMap();
-    const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
     const lerp = (start, end, amount) => start + (end - start) * amount;
 
     const readElements = () => {
@@ -358,21 +357,11 @@ function useParallax() {
         const state = states.get(element);
         if (!state) return;
 
-        state.x = lerp(state.x, state.targetX, 0.12);
-        state.y = lerp(state.y, state.targetY, 0.12);
-        state.rotate = lerp(state.rotate, state.targetRotate, 0.12);
+        state.y = lerp(state.y, state.targetY, 0.14);
 
-        element.style.setProperty('--parallax-x', `${state.x.toFixed(2)}px`);
         element.style.setProperty('--parallax-y', `${state.y.toFixed(2)}px`);
-        element.style.setProperty('--parallax-rotate', `${state.rotate.toFixed(3)}deg`);
 
-        if (
-          Math.abs(state.x - state.targetX) > 0.04 ||
-          Math.abs(state.y - state.targetY) > 0.04 ||
-          Math.abs(state.rotate - state.targetRotate) > 0.003
-        ) {
-          shouldContinue = true;
-        }
+        if (Math.abs(state.y - state.targetY) > 0.04) shouldContinue = true;
       });
 
       if (shouldContinue) frame = window.requestAnimationFrame(animate);
@@ -390,27 +379,19 @@ function useParallax() {
         const rect = element.getBoundingClientRect();
         let state = states.get(element);
         if (!state) {
-          state = { x: 0, y: 0, rotate: 0, targetX: 0, targetY: 0, targetRotate: 0 };
+          state = { y: 0, targetY: 0 };
           states.set(element, state);
         }
 
         if (rect.bottom < -220 || rect.top > viewportHeight + 220) {
-          state.targetX = 0;
           state.targetY = 0;
-          state.targetRotate = 0;
           return;
         }
 
         const speed = Number(element.dataset.parallaxSpeed || 0.04);
-        const drift = Number(element.dataset.parallaxDrift || 0);
-        const rotate = Number(element.dataset.parallaxRotate || 0);
         const centerDelta = rect.top + rect.height / 2 - viewportHeight / 2;
-        const progress = clamp((viewportHeight - rect.top) / (viewportHeight + rect.height), 0, 1);
-        const arc = Math.sin((progress - 0.5) * Math.PI);
 
         state.targetY = centerDelta * speed;
-        state.targetX = arc * drift;
-        state.targetRotate = arc * rotate;
       });
 
       requestAnimation();
@@ -434,9 +415,7 @@ function useParallax() {
       window.removeEventListener('resize', requestUpdate);
       window.removeEventListener('load', requestUpdate);
       document.querySelectorAll('[data-parallax]').forEach((element) => {
-        element.style.removeProperty('--parallax-x');
         element.style.removeProperty('--parallax-y');
-        element.style.removeProperty('--parallax-rotate');
       });
     };
   }, []);
@@ -514,9 +493,7 @@ function ProjectCard({ project, index }) {
 
 function PortfolioTile({ project, index }) {
   const isLogoTile = project.previewMode === 'logo';
-  const tileSpeed = index % 2 === 0 ? '0.065' : '-0.052';
-  const tileDrift = index % 2 === 0 ? '8' : '-8';
-  const tileRotate = index % 2 === 0 ? '0.42' : '-0.42';
+  const tileSpeed = index % 2 === 0 ? '0.032' : '-0.026';
 
   return (
     <article className={`portfolio-tile reveal${isLogoTile ? ' is-logo-tile' : ''}`}>
@@ -525,14 +502,11 @@ function PortfolioTile({ project, index }) {
           className="portfolio-thumb parallax-layer"
           data-parallax
           data-parallax-speed={tileSpeed}
-          data-parallax-drift={tileDrift}
-          data-parallax-rotate={tileRotate}
         >
           <img
             className={isLogoTile ? undefined : 'parallax-image'}
             data-parallax={!isLogoTile || undefined}
-            data-parallax-speed={!isLogoTile ? (index % 2 === 0 ? '-0.036' : '0.032') : undefined}
-            data-parallax-drift={!isLogoTile ? (index % 2 === 0 ? '-5' : '5') : undefined}
+            data-parallax-speed={!isLogoTile ? (index % 2 === 0 ? '-0.022' : '0.02') : undefined}
             src={project.cover || project.hero}
             alt={`${project.title} project preview`}
             width="900"
@@ -559,20 +533,16 @@ function HomePage({ routeHash }) {
           <div
             className="hero-orbit hero-orbit-left parallax-layer"
             data-parallax
-            data-parallax-speed="0.07"
-            data-parallax-drift="-18"
-            data-parallax-rotate="-1.2"
+            data-parallax-speed="0.045"
             aria-hidden="true"
           />
           <div
             className="hero-orbit hero-orbit-right parallax-layer"
             data-parallax
-            data-parallax-speed="-0.06"
-            data-parallax-drift="22"
-            data-parallax-rotate="1.4"
+            data-parallax-speed="-0.04"
             aria-hidden="true"
           />
-          <div className="hero-copy reveal parallax-layer" data-parallax data-parallax-speed="-0.024" data-parallax-drift="6">
+          <div className="hero-copy reveal parallax-layer" data-parallax data-parallax-speed="-0.018">
             <p className="hero-kicker">Senior Graphic Designer · 15+ Years of Experience</p>
             <h1 id="hero-title">Giovany Kantoro</h1>
             <p className="hero-note hero-role">Visual Branding & Identity · Marketing & Integrated Campaigns · Editorial & Print</p>
@@ -590,15 +560,12 @@ function HomePage({ routeHash }) {
           <figure
             className="portrait-card reveal parallax-layer"
             data-parallax
-            data-parallax-speed="0.026"
-            data-parallax-drift="-7"
-            data-parallax-rotate="-0.35"
+            data-parallax-speed="0.018"
           >
             <img
               className="parallax-image"
               data-parallax
-              data-parallax-speed="-0.032"
-              data-parallax-drift="5"
+              data-parallax-speed="-0.022"
               src={portraitImage}
               alt="Giovany Kantoro portrait"
               width="900"
