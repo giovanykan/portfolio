@@ -331,7 +331,7 @@ function useReveal() {
 
     document.querySelectorAll('.reveal').forEach((element) => observer.observe(element));
     return () => observer.disconnect();
-  });
+  }, []);
 }
 
 function useParallax() {
@@ -340,29 +340,87 @@ function useParallax() {
     if (motionQuery.matches) return undefined;
 
     let frame = 0;
+    let elements = [];
     const settleTimers = [];
+    const states = new WeakMap();
+    const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+    const lerp = (start, end, amount) => start + (end - start) * amount;
 
-    const update = () => {
+    const readElements = () => {
+      elements = Array.from(document.querySelectorAll('[data-parallax]'));
+    };
+
+    const animate = () => {
       frame = 0;
-      const elements = Array.from(document.querySelectorAll('[data-parallax]'));
+      let shouldContinue = false;
+
+      elements.forEach((element) => {
+        const state = states.get(element);
+        if (!state) return;
+
+        state.x = lerp(state.x, state.targetX, 0.12);
+        state.y = lerp(state.y, state.targetY, 0.12);
+        state.rotate = lerp(state.rotate, state.targetRotate, 0.12);
+
+        element.style.setProperty('--parallax-x', `${state.x.toFixed(2)}px`);
+        element.style.setProperty('--parallax-y', `${state.y.toFixed(2)}px`);
+        element.style.setProperty('--parallax-rotate', `${state.rotate.toFixed(3)}deg`);
+
+        if (
+          Math.abs(state.x - state.targetX) > 0.04 ||
+          Math.abs(state.y - state.targetY) > 0.04 ||
+          Math.abs(state.rotate - state.targetRotate) > 0.003
+        ) {
+          shouldContinue = true;
+        }
+      });
+
+      if (shouldContinue) frame = window.requestAnimationFrame(animate);
+    };
+
+    const requestAnimation = () => {
+      if (!frame) frame = window.requestAnimationFrame(animate);
+    };
+
+    const updateTargets = () => {
+      readElements();
       const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
 
       elements.forEach((element) => {
         const rect = element.getBoundingClientRect();
-        if (rect.bottom < -160 || rect.top > viewportHeight + 160) return;
+        let state = states.get(element);
+        if (!state) {
+          state = { x: 0, y: 0, rotate: 0, targetX: 0, targetY: 0, targetRotate: 0 };
+          states.set(element, state);
+        }
+
+        if (rect.bottom < -220 || rect.top > viewportHeight + 220) {
+          state.targetX = 0;
+          state.targetY = 0;
+          state.targetRotate = 0;
+          return;
+        }
 
         const speed = Number(element.dataset.parallaxSpeed || 0.04);
+        const drift = Number(element.dataset.parallaxDrift || 0);
+        const rotate = Number(element.dataset.parallaxRotate || 0);
         const centerDelta = rect.top + rect.height / 2 - viewportHeight / 2;
-        element.style.setProperty('--parallax-y', `${(centerDelta * speed).toFixed(2)}px`);
+        const progress = clamp((viewportHeight - rect.top) / (viewportHeight + rect.height), 0, 1);
+        const arc = Math.sin((progress - 0.5) * Math.PI);
+
+        state.targetY = centerDelta * speed;
+        state.targetX = arc * drift;
+        state.targetRotate = arc * rotate;
       });
+
+      requestAnimation();
     };
 
     const requestUpdate = () => {
-      if (frame) return;
-      frame = window.requestAnimationFrame(update);
+      window.requestAnimationFrame(updateTargets);
     };
 
-    update();
+    updateTargets();
     settleTimers.push(window.setTimeout(requestUpdate, 80));
     settleTimers.push(window.setTimeout(requestUpdate, 280));
     window.addEventListener('scroll', requestUpdate, { passive: true });
@@ -375,9 +433,13 @@ function useParallax() {
       window.removeEventListener('scroll', requestUpdate);
       window.removeEventListener('resize', requestUpdate);
       window.removeEventListener('load', requestUpdate);
-      document.querySelectorAll('[data-parallax]').forEach((element) => element.style.removeProperty('--parallax-y'));
+      document.querySelectorAll('[data-parallax]').forEach((element) => {
+        element.style.removeProperty('--parallax-x');
+        element.style.removeProperty('--parallax-y');
+        element.style.removeProperty('--parallax-rotate');
+      });
     };
-  });
+  }, []);
 }
 
 function usePageReset(routeKey) {
@@ -453,15 +515,24 @@ function ProjectCard({ project, index }) {
 function PortfolioTile({ project, index }) {
   const isLogoTile = project.previewMode === 'logo';
   const tileSpeed = index % 2 === 0 ? '0.065' : '-0.052';
+  const tileDrift = index % 2 === 0 ? '8' : '-8';
+  const tileRotate = index % 2 === 0 ? '0.42' : '-0.42';
 
   return (
     <article className={`portfolio-tile reveal${isLogoTile ? ' is-logo-tile' : ''}`}>
       <AppLink href={`/project/${project.slug}`} aria-label={`View ${project.title}`}>
-        <span className="portfolio-thumb parallax-layer" data-parallax data-parallax-speed={tileSpeed}>
+        <span
+          className="portfolio-thumb parallax-layer"
+          data-parallax
+          data-parallax-speed={tileSpeed}
+          data-parallax-drift={tileDrift}
+          data-parallax-rotate={tileRotate}
+        >
           <img
             className={isLogoTile ? undefined : 'parallax-image'}
             data-parallax={!isLogoTile || undefined}
             data-parallax-speed={!isLogoTile ? (index % 2 === 0 ? '-0.036' : '0.032') : undefined}
+            data-parallax-drift={!isLogoTile ? (index % 2 === 0 ? '-5' : '5') : undefined}
             src={project.cover || project.hero}
             alt={`${project.title} project preview`}
             width="900"
@@ -485,9 +556,23 @@ function HomePage({ routeHash }) {
       <Header />
       <main id="main-content">
         <section className="hero" aria-labelledby="hero-title">
-          <div className="hero-orbit hero-orbit-left parallax-layer" data-parallax data-parallax-speed="0.07" aria-hidden="true" />
-          <div className="hero-orbit hero-orbit-right parallax-layer" data-parallax data-parallax-speed="-0.06" aria-hidden="true" />
-          <div className="hero-copy reveal parallax-layer" data-parallax data-parallax-speed="-0.024">
+          <div
+            className="hero-orbit hero-orbit-left parallax-layer"
+            data-parallax
+            data-parallax-speed="0.07"
+            data-parallax-drift="-18"
+            data-parallax-rotate="-1.2"
+            aria-hidden="true"
+          />
+          <div
+            className="hero-orbit hero-orbit-right parallax-layer"
+            data-parallax
+            data-parallax-speed="-0.06"
+            data-parallax-drift="22"
+            data-parallax-rotate="1.4"
+            aria-hidden="true"
+          />
+          <div className="hero-copy reveal parallax-layer" data-parallax data-parallax-speed="-0.024" data-parallax-drift="6">
             <p className="hero-kicker">Senior Graphic Designer · 15+ Years of Experience</p>
             <h1 id="hero-title">Giovany Kantoro</h1>
             <p className="hero-note hero-role">Visual Branding & Identity · Marketing & Integrated Campaigns · Editorial & Print</p>
@@ -502,11 +587,18 @@ function HomePage({ routeHash }) {
         </section>
 
         <section className="about-section" id="about" aria-labelledby="about-title">
-          <figure className="portrait-card reveal parallax-layer" data-parallax data-parallax-speed="0.026">
+          <figure
+            className="portrait-card reveal parallax-layer"
+            data-parallax
+            data-parallax-speed="0.026"
+            data-parallax-drift="-7"
+            data-parallax-rotate="-0.35"
+          >
             <img
               className="parallax-image"
               data-parallax
               data-parallax-speed="-0.032"
+              data-parallax-drift="5"
               src={portraitImage}
               alt="Giovany Kantoro portrait"
               width="900"
