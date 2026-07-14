@@ -1117,9 +1117,10 @@ h1 {
   min-width: 188px;
   min-height: 42px;
   place-items: center;
-  border: 1px solid var(--line-strong);
+  border: 1px solid var(--ink-strong);
   border-radius: 999px;
-  color: var(--ink);
+  background: var(--ink-strong);
+  color: var(--reverse);
   font-size: 0.66rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -1495,8 +1496,12 @@ h1 {
   .portfolio-view-button {
     min-width: 162px;
     min-height: 44px;
-    margin-top: 16px;
+    margin-top: 10px;
     font-size: 0.72rem;
+  }
+
+  .scroll-cue {
+    bottom: 24px;
   }
 
   .portfolio-detail-intro h1 {
