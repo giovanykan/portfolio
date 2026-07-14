@@ -1518,6 +1518,15 @@ h1 {
     text-align: center;
   }
 
+  .project-pager a,
+  .project-pager a + a {
+    text-align: center;
+  }
+
+  .site-footer > span:first-child {
+    display: none;
+  }
+
   .site-footer div {
     justify-content: center;
   }
