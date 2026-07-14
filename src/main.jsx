@@ -493,16 +493,11 @@ function ProjectCard({ project, index }) {
 
 function PortfolioTile({ project, index }) {
   const isLogoTile = project.previewMode === 'logo';
-  const tileSpeed = index % 2 === 0 ? '0.032' : '-0.026';
 
   return (
     <article className={`portfolio-tile reveal${isLogoTile ? ' is-logo-tile' : ''}`}>
       <AppLink href={`/project/${project.slug}`} aria-label={`View ${project.title}`}>
-        <span
-          className="portfolio-thumb parallax-layer"
-          data-parallax
-          data-parallax-speed={tileSpeed}
-        >
+        <span className="portfolio-thumb">
           <img
             className={isLogoTile ? undefined : 'parallax-image'}
             data-parallax={!isLogoTile || undefined}
