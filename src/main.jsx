@@ -516,7 +516,7 @@ function PortfolioTile({ project, index }) {
             loading={index < 3 ? 'eager' : 'lazy'}
           />
         </span>
-        <h3>{project.shortTitle} -&gt;</h3>
+        <span className="portfolio-view-button">View Project</span>
       </AppLink>
     </article>
   );

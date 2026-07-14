@@ -541,15 +541,32 @@ h1 {
   transform: scale(0.9);
 }
 
-.portfolio-tile h3 {
-  margin: 12px 0 0;
+.portfolio-view-button {
+  display: inline-grid;
+  min-width: 148px;
+  min-height: 42px;
+  margin: 18px auto 0;
+  padding: 0 24px;
+  place-items: center;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
   color: var(--ink-strong);
   font-family: var(--body);
-  font-size: 1.22rem;
-  font-weight: 600;
-  line-height: 1.14;
-  text-align: center;
-  text-wrap: balance;
+  font-size: 0.72rem;
+  font-weight: 800;
+  line-height: 1;
+  text-transform: uppercase;
+  transition-property: color, background-color, border-color, transform;
+  transition-duration: 180ms;
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.portfolio-tile a:hover .portfolio-view-button,
+.portfolio-tile a:focus-visible .portfolio-view-button {
+  border-color: var(--ink-strong);
+  background: var(--ink-strong);
+  color: var(--reverse);
+  transform: translateY(-2px);
 }
 
 .project-showcase-list {
@@ -1475,8 +1492,11 @@ h1 {
     gap: 42px;
   }
 
-  .portfolio-tile h3 {
-    font-size: 1.08rem;
+  .portfolio-view-button {
+    min-width: 162px;
+    min-height: 44px;
+    margin-top: 16px;
+    font-size: 0.72rem;
   }
 
   .portfolio-detail-intro h1 {
