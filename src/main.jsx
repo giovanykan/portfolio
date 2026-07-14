@@ -235,6 +235,13 @@ const portfolioOrder = [
 ];
 const portfolioProjects = portfolioOrder.map((slug) => projects.find((project) => project.slug === slug)).filter(Boolean);
 
+function formatDeliverables(deliverables) {
+  return deliverables
+    .split(/\s*[•,]\s*/)
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
 const workSections = [
   {
     id: 'visual-branding',
@@ -440,11 +447,11 @@ function Header() {
   return (
     <header className="site-header" id="top">
       <AppLink className="wordmark" href="/" aria-label="Back to homepage">
-        portfolio
+        Portfolio
       </AppLink>
       <nav className="nav-links" aria-label="Main navigation">
-        <AppLink href="/#work">Work</AppLink>
         <AppLink href="/#about">About</AppLink>
+        <AppLink href="/#work">Work</AppLink>
         <AppLink href="/#contact">Contact</AppLink>
       </nav>
     </header>
@@ -701,7 +708,11 @@ function ProjectPage({ slug }) {
             </div>
             <div>
               <span>Scope</span>
-              <strong>{project.deliverables}</strong>
+              <strong className="scope-list">
+                {formatDeliverables(project.deliverables).map((deliverable) => (
+                  <span key={deliverable}>{deliverable}</span>
+                ))}
+              </strong>
             </div>
           </aside>
 
