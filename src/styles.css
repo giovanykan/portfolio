@@ -1303,6 +1303,7 @@ h1 {
 
   .portfolio-detail-intro h1 {
     font-size: 3.2rem;
+    text-align: center;
   }
 
   .portfolio-masonry,
@@ -1393,6 +1394,11 @@ h1 {
     --side: 14px;
   }
 
+  .site-header {
+    grid-template-columns: 1fr;
+    justify-items: center;
+  }
+
   .wordmark {
     font-size: 1.2rem;
   }
@@ -1408,7 +1414,7 @@ h1 {
 
   .hero-kicker {
     margin-bottom: 24px;
-    font-size: 0.76rem;
+    font-size: 0.61rem;
   }
 
   .hero-role {
@@ -1501,6 +1507,19 @@ h1 {
   .contact-section h2,
   .concept-copy h2 {
     font-size: 2.1rem;
+  }
+
+  .contact-section h2 {
+    line-height: 1.12;
+  }
+
+  .site-footer {
+    justify-items: center;
+    text-align: center;
+  }
+
+  .site-footer div {
+    justify-content: center;
   }
 
   .detail-stage {
