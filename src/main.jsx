@@ -174,9 +174,11 @@ const projects = [
     heroDisplay: 'long-form',
     previewMode: 'logo',
     images: [],
-    summary: 'A design approach that translates rich culinary heritage into a premium dining presentation.',
+    summary:
+      'The Golden Saffron is an authentic Indian restaurant, also offering Malay and Chinese cuisine to create a premium, multi-cuisine dining experience.',
+    emphasizeSummary: true,
     concept:
-      "I elevated the restaurant's visual touchpoints, from custom placemats to promotional banners, through a balance of deep, regal tones and structured layouts.",
+      "I elevated the restaurant's visual touchpoints, from custom placemats to promotional banners, through a balance of deep, regal tones and structured layouts. I also developed distinct identities for the Indian and Chinese menu volumes, ensuring each extensive menu remained highly readable while retaining a polished, high-end aesthetic.",
     second:
       'I also developed distinct identities for the Indian and Chinese menu volumes, ensuring extensive menus remained highly readable while retaining a polished, high-end aesthetic.',
   },
@@ -578,14 +580,20 @@ function HomePage({ routeHash }) {
           <article className="about-copy reveal parallax-layer" data-parallax data-parallax-speed="-0.018">
             <h2 id="about-title">About Me</h2>
             <p>
-              I am a graphic designer with over 15 years of experience across marketing, branding, and editorial design.
-              My work spans menu and editorial design, integrated marketing campaigns, and full brand identity systems,
-              always grounded in a clear understanding of each brand's positioning and voice.
+              I am a graphic designer with 15+ years of experience delivering branding, marketing, and editorial design
+              solutions. My work spans menu design, editorial projects, integrated marketing campaigns, and complete brand
+              identity development, all grounded in a clear understanding of each brand's positioning, audience, and voice.
             </p>
             <p>
-              I have integrated AI tools into my workflow to accelerate iteration while maintaining a high standard of craft
-              and attention to detail. My approach combines strategic thinking with strong visual execution to deliver work
-              that is both distinctive and effective.
+              I incorporate AI tools into my workflow to speed up creative iteration while preserving a high level of design
+              quality and attention to detail. Combining strategic insight with strong visual execution, I create work that
+              is distinctive, purposeful, and results-driven.
+            </p>
+            <p>
+              I Believe that good design should be both purposeful and timeless. I strive to create clear, meaningful visual
+              experiences that not only capture attention but also communicate with clarity, build connection, and support
+              long-term brand growth. Every design decision is guided by the balance between creativity, function, and
+              authenticity, ensuring that the final outcome is as strategic as it is visually compelling.
             </p>
             <div className="expertise-tags" aria-label="Design expertise">
               {expertiseTags.map((tag) => (
@@ -655,7 +663,7 @@ function ProjectPage({ slug }) {
           <div className="portfolio-detail-intro reveal parallax-layer" data-parallax data-parallax-speed="-0.018">
             <h1 id="detailTitle">{project.shortTitle}</h1>
             <div>
-              <p>{project.summary}</p>
+              <p>{project.emphasizeSummary ? <strong>{project.summary}</strong> : project.summary}</p>
               <p>{project.concept}</p>
             </div>
           </div>
