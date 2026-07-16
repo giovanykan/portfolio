@@ -589,7 +589,7 @@ function HomePage({ routeHash }) {
               is distinctive, purposeful, and results-driven.
             </p>
             <p>
-              I Believe that good design should be both purposeful and timeless. I strive to create clear, meaningful visual
+              I believe that good design should be both purposeful and timeless. I strive to create clear, meaningful visual
               experiences that not only capture attention but also communicate with clarity, build connection, and support
               long-term brand growth. Every design decision is guided by the balance between creativity, function, and
               authenticity, ensuring that the final outcome is as strategic as it is visually compelling.
