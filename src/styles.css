@@ -1128,7 +1128,7 @@ h1 {
 
 .site-footer {
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  grid-template-columns: 1fr auto;
   gap: 24px;
   align-items: center;
   width: min(var(--max), calc(100% - var(--side) * 2));
@@ -1547,10 +1547,6 @@ h1 {
   .project-pager a,
   .project-pager a + a {
     text-align: center;
-  }
-
-  .site-footer > span:first-child {
-    display: none;
   }
 
   .site-footer div {

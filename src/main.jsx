@@ -463,8 +463,7 @@ function Header() {
 function Footer() {
   return (
     <footer className="site-footer">
-      <span>GIOVANY_KANTORO</span>
-      <span>© 2026 Giovany Kantoro. All rights reserved.</span>
+      <span>© 2026 ALL RIGHTS RESERVED.</span>
       <div>
         <a href="https://www.behance.net/" rel="noreferrer">
           Behance
